@@ -19,10 +19,11 @@
 # For those usages not covered by this license please contact with
 # frb@tid.es
 
-node.default[:cygnus][:version] = "0.2"
+node.default[:cygnus][:version] = "0.5.1"
 
-include_recipe "cygnus::stop_cygnus"
-include_recipe "cygnus::uninstall_dependencies"
-include_recipe "cygnus::uninstall_jdk"
-include_recipe "cygnus::uninstall_maven"
-include_recipe "cygnus::uninstall_flume"
+include_recipe "cygnus::install_dependencies"
+include_recipe "cygnus::install_jdk"
+include_recipe "cygnus::install_maven"
+include_recipe "cygnus::install_flume"
+include_recipe "cygnus::install_cygnus"
+include_recipe "cygnus::start_cygnus"

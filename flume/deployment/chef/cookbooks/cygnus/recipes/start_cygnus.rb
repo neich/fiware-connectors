@@ -17,12 +17,11 @@
 # along with Orion Context Broker. If not, see http://www.gnu.org/licenses/.
 #
 # For those usages not covered by this license please contact with
-# frb@tid.es
+# francisco.romerobueno@telefonica.com
 
-node.default[:cygnus][:version] = "0.2"
-
-include_recipe "cygnus::stop_cygnus"
-include_recipe "cygnus::uninstall_dependencies"
-include_recipe "cygnus::uninstall_jdk"
-include_recipe "cygnus::uninstall_maven"
-include_recipe "cygnus::uninstall_flume"
+# Start Cygnus.
+execute "start_cygnus" do
+        user "root"
+        command "nohup #{node[:flume][:path]}/apache-flume-#{node[:flume][:version]}-bin/bin/flume-ng agent --conf #{node[:flume][:path]}/apache-flume-#{node[:flume][:version]}-bin/conf -f #{node[:flume][:path]}/apache-flume-#{node[:flume][:version]}-bin/conf/cygnus.conf -n orionagent -Dflume.root.logger=INFO,LOGFILE &"
+        action :run
+end

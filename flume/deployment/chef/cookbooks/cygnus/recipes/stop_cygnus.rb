@@ -17,12 +17,12 @@
 # along with Orion Context Broker. If not, see http://www.gnu.org/licenses/.
 #
 # For those usages not covered by this license please contact with
-# frb@tid.es
+# francisco.romerobueno@telefonica.com
 
-node.default[:cygnus][:version] = "0.2"
-
-include_recipe "cygnus::stop_cygnus"
-include_recipe "cygnus::uninstall_dependencies"
-include_recipe "cygnus::uninstall_jdk"
-include_recipe "cygnus::uninstall_maven"
-include_recipe "cygnus::uninstall_flume"
+bash "stop_cygnus" do
+        user "root"
+        code <<-EOH
+                pid=$(ps -ef | grep -v grep | grep cygnus | awk '{ print $2 }')
+                kill -9 $pid
+	EOH
+end

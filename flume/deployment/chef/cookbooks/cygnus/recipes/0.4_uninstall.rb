@@ -21,6 +21,7 @@
 
 node.default[:cygnus][:version] = "0.4"
 
+include_recipe "cygnus::stop_cygnus"
 include_recipe "cygnus::uninstall_dependencies"
 include_recipe "cygnus::uninstall_jdk"
 include_recipe "cygnus::uninstall_maven"
