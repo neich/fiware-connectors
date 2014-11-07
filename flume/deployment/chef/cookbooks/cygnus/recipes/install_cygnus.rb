@@ -105,8 +105,8 @@ template "#{node[:flume][:path]}/apache-flume-#{node[:flume][:version]}-bin/conf
                         :mysql_channel_capacity => "#{node[:cygnus][:mysql_channel][:capacity]}",
                         :mysql_channel_trans_capacity => "#{node[:cygnus][:mysql_channel][:transaction_capacity]}"
                 })
-	else
-        	source "cygnus/cygnus-0.3-higher.conf.erb"
+	elsif "#{node[:cygnus][:version]}" == "0.3" || "#{node[:cygnus][:version]}" == "0.4"
+        	source "cygnus/cygnus-0.3-0.4.conf.erb"
 		variables({
                         :port => "#{node[:cygnus][:http_source][:port]}",
 			:default_org => "#{node[:cygnus][:http_source][:default_organization]}",
@@ -137,6 +137,70 @@ template "#{node[:flume][:path]}/apache-flume-#{node[:flume][:version]}-bin/conf
                         :mysql_channel_capacity => "#{node[:cygnus][:mysql_channel][:capacity]}",
                         :mysql_channel_trans_capacity => "#{node[:cygnus][:mysql_channel][:transaction_capacity]}"
                 })
+        elsif "#{node[:cygnus][:version]}" == "0.4.1"
+                source "cygnus/cygnus-0.4.1.conf.erb"
+		variables({
+                        :port => "#{node[:cygnus][:http_source][:port]}",
+			:default_org => "#{node[:cygnus][:http_source][:default_organization]}",
+                        :ttl => "#{node[:cygnus][:http_source][:ttl]}",
+                        :cosmos_host => "#{node[:cygnus][:hdfs_sink][:host]}",
+                        :cosmos_port => "#{node[:cygnus][:hdfs_sink][:port]}",
+                        :cosmos_username => "#{node[:cygnus][:hdfs_sink][:username]}",
+			:cosmos_password => "#{node[:cygnus][:hdfs_sink][:password]}",
+			:hdfs_persisence => "#{node[:cygnus][:hdfs_sink][:persistence_mode]}",
+			:hdfs_naming_prefix => "#{node[:cygnus][:hdfs_sink][:naming_prefix]}",
+			:hive_port => "#{node[:cygnus][:hdfs_sink][:hive_port]}",
+                        :hdfs_api => "#{node[:cygnus][:hdfs_sink][:hdfs_api]}",
+                        :ckan_api_key => "#{node[:cygnus][:ckan_sink][:api_key]}",
+                        :ckan_host => "#{node[:cygnus][:ckan_sink][:host]}",
+                        :ckan_port => "#{node[:cygnus][:ckan_sink][:port]}",
+                        :ckan_dataset => "#{node[:cygnus][:ckan_sink][:dataset]}",
+			:ckan_persistence => "#{node[:cygnus][:ckan_sink][:persistence_mode]}",
+			:orion_url => "#{node[:cygnus][:ckan_sink][:orion_url]}",
+                        :mysql_host => "#{node[:cygnus][:mysql_sink][:host]}",
+                        :mysql_port => "#{node[:cygnus][:mysql_sink][:port]}",
+                        :mysql_username => "#{node[:cygnus][:mysql_sink][:username]}",
+                        :mysql_password => "#{node[:cygnus][:mysql_sink][:password]}",
+                        :mysql_persistence => "#{node[:cygnus][:mysql_sink][:persistence_mode]}",
+			:mysql_naming_prefix => "#{node[:cygnus][:mysql_sink][:naming_prefix]}",
+                        :hdfs_channel_capacity => "#{node[:cygnus][:hdfs_channel][:capacity]}",
+                        :hdfs_channel_trans_capacity => "#{node[:cygnus][:hdfs_channel][:transaction_capacity]}",
+                        :ckan_channel_capacity => "#{node[:cygnus][:ckan_channel][:capacity]}",
+                        :ckan_channel_trans_capacity => "#{node[:cygnus][:ckan_channel][:transaction_capacity]}",
+                        :mysql_channel_capacity => "#{node[:cygnus][:mysql_channel][:capacity]}",
+                        :mysql_channel_trans_capacity => "#{node[:cygnus][:mysql_channel][:transaction_capacity]}"
+        elsif "#{node[:cygnus][:version]}" == "0.5" || "#{node[:cygnus][:version]}" == "0.5.1"
+                source "cygnus/cygnus-0.4.1.conf.erb"
+		variables({
+                        :port => "#{node[:cygnus][:http_source][:port]}",
+			:default_org => "#{node[:cygnus][:http_source][:default_organization]}",
+                        :ttl => "#{node[:cygnus][:http_source][:ttl]}",
+                        :mgmt_port => "#{node[:cygnus][:http_source][:mgmg_port]}",
+                        :cosmos_host => "#{node[:cygnus][:hdfs_sink][:host]}",
+                        :cosmos_port => "#{node[:cygnus][:hdfs_sink][:port]}",
+                        :cosmos_username => "#{node[:cygnus][:hdfs_sink][:username]}",
+			:cosmos_password => "#{node[:cygnus][:hdfs_sink][:password]}",
+			:hdfs_persisence => "#{node[:cygnus][:hdfs_sink][:persistence_mode]}",
+			:hdfs_naming_prefix => "#{node[:cygnus][:hdfs_sink][:naming_prefix]}",
+			:hive_port => "#{node[:cygnus][:hdfs_sink][:hive_port]}",
+                        :hdfs_api => "#{node[:cygnus][:hdfs_sink][:hdfs_api]}",
+                        :ckan_api_key => "#{node[:cygnus][:ckan_sink][:api_key]}",
+                        :ckan_host => "#{node[:cygnus][:ckan_sink][:host]}",
+                        :ckan_port => "#{node[:cygnus][:ckan_sink][:port]}",
+                        :ckan_dataset => "#{node[:cygnus][:ckan_sink][:dataset]}",
+			:ckan_persistence => "#{node[:cygnus][:ckan_sink][:persistence_mode]}",
+			:orion_url => "#{node[:cygnus][:ckan_sink][:orion_url]}",
+                        :mysql_host => "#{node[:cygnus][:mysql_sink][:host]}",
+                        :mysql_port => "#{node[:cygnus][:mysql_sink][:port]}",
+                        :mysql_username => "#{node[:cygnus][:mysql_sink][:username]}",
+                        :mysql_password => "#{node[:cygnus][:mysql_sink][:password]}",
+                        :mysql_persistence => "#{node[:cygnus][:mysql_sink][:persistence_mode]}",
+			:mysql_naming_prefix => "#{node[:cygnus][:mysql_sink][:naming_prefix]}",
+                        :hdfs_channel_capacity => "#{node[:cygnus][:hdfs_channel][:capacity]}",
+                        :hdfs_channel_trans_capacity => "#{node[:cygnus][:hdfs_channel][:transaction_capacity]}",
+                        :ckan_channel_capacity => "#{node[:cygnus][:ckan_channel][:capacity]}",
+                        :ckan_channel_trans_capacity => "#{node[:cygnus][:ckan_channel][:transaction_capacity]}",
+                        :mysql_channel_capacity => "#{node[:cygnus][:mysql_channel][:capacity]}",
+                        :mysql_channel_trans_capacity => "#{node[:cygnus][:mysql_channel][:transaction_capacity]}"
 	end
-	action :nothing
 end

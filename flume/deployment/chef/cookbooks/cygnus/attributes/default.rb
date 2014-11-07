@@ -16,6 +16,10 @@ default["cygnus"]["http_source"]["port"] = "5050"
 default[:cygnus][:http_source][:orion_version] = "0\.10\.*"
 # from 0.3
 default[:cygnus][:http_source][:default_organization] = "defaultOrg"
+# from 0.4.1
+default[:cygnus][:http_source][:ttl] = "10"
+# from 0.5
+default[:cygnus][:http_source][:mgmt_port] = "8081"
 
 # all versions {
 default[:cygnus][:hdfs_sink][:host] = "x.y.z.w"
