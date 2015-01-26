@@ -17,7 +17,7 @@
  * francisco.romerobueno at telefonica dot com
  */
 
-package es.tid.fiware.fiwareconnectors.ckanprotocol.hadoop;
+package es.tid.fiware.fiwareconnectors.ckanprotocol.hadoop.ckan;
 
 import java.io.DataInput;
 import java.io.DataOutput;

@@ -19,6 +19,7 @@
 
 package es.tid.fiware.fiwareconnectors.ckanprotocol.hadoop;
 
+import es.tid.fiware.fiwareconnectors.ckanprotocol.hadoop.ckan.CKANInputFormat;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;

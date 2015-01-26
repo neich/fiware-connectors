@@ -17,7 +17,7 @@
  * francisco.romerobueno at telefonica dot com
  */
 
-package es.tid.fiware.fiwareconnectors.ckanprotocol.hadoop;
+package es.tid.fiware.fiwareconnectors.ckanprotocol.hadoop.ckan;
 
 import es.tid.fiware.fiwareconnectors.ckanprotocol.backends.ckan.CKANBackend;
 import java.io.IOException;
@@ -50,6 +50,7 @@ public class CKANRecordReader extends RecordReader<LongWritable, Text> { // FIXM
     public CKANRecordReader(CKANBackend backend) {
         this.logger = Logger.getLogger(CKANRecordReader.class);
         this.backend = backend;
+        logger.info("CKANRecordReader created");
     } // CKANRecordReader
     
     @Override

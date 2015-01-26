@@ -17,7 +17,7 @@
  * francisco.romerobueno at telefonica dot com
  */
 
-package es.tid.fiware.fiwareconnectors.ckanprotocol.hadoop;
+package es.tid.fiware.fiwareconnectors.ckanprotocol.hadoop.ckan;
 
 import es.tid.fiware.fiwareconnectors.ckanprotocol.backends.ckan.CKANBackend;
 import java.util.ArrayList;
@@ -95,11 +95,12 @@ public class CKANInputFormat extends InputFormat<LongWritable, Text> {
     @Override
     public RecordReader<LongWritable, Text> createRecordReader(InputSplit split, TaskAttemptContext context) {
         if (backend == null) {
-            logger.error("Unable to create a CKANRecordReader, it seems the CKAN environment was not properly set");
+            logger.info("Unable to create a CKANRecordReader, it seems the CKAN environment was not properly set");
             return null;
         } // if else
         
         // create a reader
+        logger.info("Creating a CKANRecordReader");
         return new CKANRecordReader(backend);
     } // createRecordReader
     
