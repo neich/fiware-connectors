@@ -69,8 +69,6 @@ public class CKANInputFormat extends InputFormat<LongWritable, Text> {
      * @param ckanAPIKey
      */
     public static void setCKANEnvironmnet(Job job, String ckanHost, String ckanPort, boolean ssl, String ckanAPIKey) {
-//        job.getConfiguration().set(CKAN_SSL, ssl ? "true" : "false"); // FIXME: not really used...
-//        job.getConfiguration().set(CKAN_API_KEY, ckanAPIKey); // FIXME: not really used...
         backend = new CKANBackend(ckanHost, ckanPort, ssl, ckanAPIKey);
     } // setCKANAPIKey
     
@@ -100,8 +98,7 @@ public class CKANInputFormat extends InputFormat<LongWritable, Text> {
         } // if else
         
         // create a reader
-        logger.info("Creating a CKANRecordReader");
-        return new CKANRecordReader(backend);
+        return new CKANRecordReader(backend, split, context);
     } // createRecordReader
     
     @Override

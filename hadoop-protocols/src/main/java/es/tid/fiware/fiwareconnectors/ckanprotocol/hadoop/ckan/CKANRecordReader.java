@@ -37,6 +37,8 @@ public class CKANRecordReader extends RecordReader<LongWritable, Text> { // FIXM
     
     private Logger logger;
     private CKANBackend backend;
+    private InputSplit split;
+    private TaskAttemptContext context;
     private long start;
     private long end;
     private int current; // FIXME: this should be a long integer... but arrays do not accept such a large index
@@ -47,28 +49,23 @@ public class CKANRecordReader extends RecordReader<LongWritable, Text> { // FIXM
     /**
      * Constructor.
      */
-    public CKANRecordReader(CKANBackend backend) {
+    public CKANRecordReader(CKANBackend backend, InputSplit split, TaskAttemptContext context) {
         this.logger = Logger.getLogger(CKANRecordReader.class);
         this.backend = backend;
-        logger.info("CKANRecordReader created");
+        this.split = split;
+        this.context = context;
     } // CKANRecordReader
     
     @Override
     public void initialize(InputSplit split, TaskAttemptContext context) throws IOException, InterruptedException {
-        logger.info("--- 1");
         // get start, end and current positions
-        CKANInputSplit ckanInputSplit = (CKANInputSplit) split;
-        logger.info("--- 2");
+        CKANInputSplit ckanInputSplit = (CKANInputSplit) this.split;
         start = ckanInputSplit.getFirstRecordIndex();
-        logger.info("--- 3");
         end = start + ckanInputSplit.getLength();
-        logger.info("--- 4");
         current = 0;
-        logger.info("--- 5");
         
         // query CKAN for the related resource, seeking to the start of the split
         records = backend.getRecords(ckanInputSplit.getResId(), start, end);
-        logger.info("--- 6");
     } // initialize
     
     @Override
