@@ -57,6 +57,38 @@ public class OrionStatsSink extends OrionSink {
         stats = new StatsContainer();
     } // OrionStatsSink
     
+    /**
+     * Gets the Orion host. It is protected due to it is only required for testing purposes.
+     * @return
+     */
+    protected String getOrionHost() {
+        return orionHost;
+    } // getOrionHost
+    
+    /**
+     * Gets the Orion port. It is protected due to it is only required for testing purposes.
+     * @return
+     */
+    protected String getOrionPort() {
+        return orionPort;
+    } // getOrionPort
+    
+    /**
+     * Gets the persistence backend. It is protected due to it is only required for testing purposes.
+     * @return
+     */
+    protected OrionBackend getPersistenceBackend() {
+        return backend;
+    } // getPersistenceBackend
+    
+    /**
+     * Sets the persistence backend. It is protected due to it is only required for testing purposes.
+     * @param persistenceBackend
+     */
+    protected void setPersistenceBackend(OrionBackend backend) {
+        this.backend = backend;
+    } // setPersistenceBackend
+    
     @Override
     public void configure(Context context) {
         orionHost = context.getString("orion_host", "localhost");
@@ -103,7 +135,7 @@ public class OrionStatsSink extends OrionSink {
             for (ContextAttribute contextAttribute : contextAttributes) {
                 String attrName = contextAttribute.getName();
                 String attrType = contextAttribute.getType();
-                String attrValue = contextAttribute.getContextValue(true);
+                String attrValue = contextAttribute.getContextValue(false);
                 logger.debug("[" + this.getName() + "] Processing context attribute (name=" + attrName + ", type="
                         + attrType + ")");
                 ContextAttributeStats contextAttributeStats = stats.updateStats(entityId, entityType, attrName,
@@ -169,109 +201,5 @@ public class OrionStatsSink extends OrionSink {
         } // updateStats
         
     } // StatsContainer
-    
-    /**
-     * Statistics regarding a single entity's attribute.
-     */
-    public class ContextAttributeStats {
-        
-        private String attrName;
-        private String attrType;
-        private long numMeasures;
-        private double max;
-        private double min;
-        private double average;
-        private double variation;
-        
-        /**
-         * Constructor.
-         */
-        public ContextAttributeStats(String attrName, String attrType) {
-            this.attrName = attrName;
-            this.attrType = attrType;
-            numMeasures = 0;
-            max = 0;
-            min = 0;
-            average = 0;
-            variation = 0;
-        } // ContextAttributeStats
-        
-        /**
-         * Updates the statistics given a new value.
-         * @param value
-         */
-        public void updateStats(double value) {
-            if (numMeasures == 0 || numMeasures == Long.MAX_VALUE) {
-                numMeasures = 1;
-                max = value;
-                min = value;
-                average = value;
-                variation = 0;
-            } else {
-                numMeasures++;
-                
-                if (value > max) {
-                    max = value;
-                } // if else if
-
-                if (value < min) {
-                    min = value;
-                } // if
-
-                average = (((numMeasures - 1) / numMeasures) * average) + (value / numMeasures);
-                variation = (((numMeasures - 1) / numMeasures) * variation)
-                        + (Math.pow((value - average), 2) / (numMeasures - 1));
-            } // if else
-        } // updateStats
-        
-        /**
-         * Gets the maximum.
-         * @return
-         */
-        public double getMax() {
-            return max;
-        } // getMax
-        
-        /**
-         * Gets the minimum.
-         * @return
-         */
-        public double getMin() {
-            return min;
-        } // getMin
-        
-        /**
-         * Gets the average.
-         * @return
-         */
-        public double getAverage() {
-            return average;
-        } // getAverage
-
-        /**
-         * Gets the variation.
-         * @return
-         */
-        public double getVariation() {
-            return variation;
-        } // getVariation
-        
-        /**
-         * Gets the attribute name.
-         * @return
-         */
-        public String getName() {
-            return attrName;
-        } // getName
-        
-        /**
-         * Gets the attribute type.
-         * @return
-         */
-        public String getType() {
-            return attrType;
-        } // getType
-
-    } // ContextAttributeStats
 
 } // OrionStatsSink

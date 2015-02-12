@@ -21,7 +21,7 @@ package es.tid.fiware.fiwareconnectors.cygnus.backends.orion;
 import es.tid.fiware.fiwareconnectors.cygnus.errors.CygnusPersistenceError;
 import es.tid.fiware.fiwareconnectors.cygnus.errors.CygnusRuntimeError;
 import es.tid.fiware.fiwareconnectors.cygnus.http.HttpClientFactory;
-import es.tid.fiware.fiwareconnectors.cygnus.sinks.OrionStatsSink.ContextAttributeStats;
+import es.tid.fiware.fiwareconnectors.cygnus.sinks.ContextAttributeStats;
 import java.io.IOException;
 import java.util.ArrayList;
 import org.apache.http.Header;
@@ -67,6 +67,14 @@ public class OrionBackend {
     } // OrionBackend
     
     /**
+     * Sets the http client. This is protected since it is only used by the tests.
+     * @param httpClient
+     */
+    protected void setHttpClient(HttpClient httpClient) {
+        this.httpClient = httpClient;
+    } // setHttpClient
+    
+    /**
      * Updates a context element.
      * @throws Exception
      */
@@ -93,7 +101,7 @@ public class OrionBackend {
             jsonStr += ""
                     + "         {"
                     + "             \"name\": \"" + attrStats.getName() + "\","
-                    + "             \"type\": \"" + attrStats.getType() + "\""
+                    + "             \"type\": \"" + attrStats.getType() + "\","
                     + "             \"metadatas\": ["
                     + "             {"
                     + "                \"name\": \"max\","
