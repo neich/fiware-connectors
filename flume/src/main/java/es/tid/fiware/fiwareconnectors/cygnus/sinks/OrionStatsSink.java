@@ -183,7 +183,7 @@ public class OrionStatsSink extends OrionSink {
             
             if (attrsMap == null) {
                 attrsMap = new HashMap();
-                stats = new ContextAttributeStats(entityId, entityType);
+                stats = new ContextAttributeStats(attrName, attrType);
                 attrsMap.put(typedAttrName, stats);
                 entitiesMap.put(typedEntityId, attrsMap);
             } else {

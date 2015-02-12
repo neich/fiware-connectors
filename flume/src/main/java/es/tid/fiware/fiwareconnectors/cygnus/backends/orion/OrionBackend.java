@@ -34,6 +34,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.log4j.Logger;
 
@@ -85,7 +86,9 @@ public class OrionBackend {
         
         // create the http headers
         ArrayList<Header> headers = new ArrayList<Header>();
-        
+        headers.add(new BasicHeader("Content-Type", "application/json"));
+        headers.add(new BasicHeader("Accept", "application/json"));
+
         // create the Json-based payload
         String jsonStr = ""
                 + "{"
@@ -140,7 +143,7 @@ public class OrionBackend {
         StringEntity entity = new StringEntity(jsonStr);
         
         // do the request
-        HttpResponse response = doRequest("PUT", relativeURL, true, headers, entity);
+        HttpResponse response = doRequest("POST", relativeURL, true, headers, entity);
 
         // check the status
         if (response.getStatusLine().getStatusCode() != 200) {
