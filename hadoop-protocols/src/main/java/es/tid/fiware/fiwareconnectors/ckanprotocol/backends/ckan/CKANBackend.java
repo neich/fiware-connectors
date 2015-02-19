@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U
+ * Copyright 2015 Telefonica Investigación y Desarrollo, S.A.U
  *
  * This file is part of fiware-connectors (FI-WARE project).
  *
@@ -21,6 +21,7 @@ package es.tid.fiware.fiwareconnectors.ckanprotocol.backends.ckan;
 
 import es.tid.fiware.fiwareconnectors.ckanprotocol.http.HttpClientFactory;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,7 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  *
@@ -41,15 +43,18 @@ import org.json.simple.parser.JSONParser;
  */
 public class CKANBackend {
     
-    private Logger logger;
-    private String ckanHost;
-    private String ckanPort;
-    private String apiKey;
-    private boolean ssl;
-    private HttpClientFactory httpClientFactory;
+    private final Logger logger;
+    private final String ckanHost;
+    private final String ckanPort;
+    private final String apiKey;
+    private final boolean ssl;
+    private final HttpClientFactory httpClientFactory;
     
     /**
      * Constructor.
+     * @param ckanHost
+     * @param ckanPort
+     * @param ssl
      * @param apiKey
      */
     public CKANBackend(String ckanHost, String ckanPort, boolean ssl, String apiKey) {
@@ -67,7 +72,7 @@ public class CKANBackend {
      * @return The package identifiers/names within the given organization id/name
      */
     public List<String> getPackages(String orgId) {
-        logger.info("Getting the packages within " + orgId + " organization");
+        logger.debug("Getting the packages within " + orgId + " organization");
 
         try {
             List<String> resIds = new ArrayList<String>();
@@ -77,8 +82,8 @@ public class CKANBackend {
             JSONObject result = (JSONObject) resp.getJsonObject().get("result");
             JSONArray pkgs = (JSONArray) result.get("packages");
             
-            for (int i = 0; i < pkgs.size(); i++) {
-                JSONObject pkg = (JSONObject) pkgs.get(i);
+            for (Object pkg1 : pkgs) {
+                JSONObject pkg = (JSONObject) pkg1;
                 resIds.add((String) pkg.get("id"));
             } // for
             
@@ -94,7 +99,7 @@ public class CKANBackend {
      * @return The resource identifiers/names within the given package id/name
      */
     public List<String> getResources(String pkgId) {
-        logger.info("Getting the resources within " + pkgId + " + package");
+        logger.debug("Getting the resources within " + pkgId + " + package");
         
         try {
             List<String> resIds = new ArrayList<String>();
@@ -104,8 +109,8 @@ public class CKANBackend {
             JSONObject result = (JSONObject) resp.getJsonObject().get("result");
             JSONArray resources = (JSONArray) result.get("resources");
             
-            for (int i = 0; i < resources.size(); i++) {
-                JSONObject resource = (JSONObject) resources.get(i);
+            for (Object res : resources) {
+                JSONObject resource = (JSONObject) res;
                 resIds.add((String) resource.get("id"));
             } // for
             
@@ -121,7 +126,7 @@ public class CKANBackend {
      * @return The total number of records within the given resource
      */
     public int getNumRecords(String resId) {
-        logger.info("Getting the number of records within " + resId);
+        logger.debug("Getting the number of records within " + resId);
         
         try {
             int numRecords = 0;
@@ -156,7 +161,7 @@ public class CKANBackend {
      * @return The records within the given resource
      */
     public JSONArray getRecords(String resId, long start, long end) {
-        logger.info("Getting the [" + start + ", " + end + "] records within " + resId);
+        logger.debug("Getting the [" + start + ", " + end + "] records within " + resId);
         
         try {
             String url = "http" + (ssl ? "s" : "") + "://" + ckanHost + ":" + ckanPort
@@ -245,7 +250,12 @@ public class CKANBackend {
 
             // return result
             return new CKANResponse(o, response.getStatusLine().getStatusCode());
-        } catch (Exception e) {
+        } catch (IOException e) {
+            throw e;
+        } catch (IllegalStateException e) {
+            throw e;
+        } // try catch
+        catch (ParseException e) {
             throw e;
         } // try catch
     } // doCKANRequest
