@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U
+ * Copyright 2015 Telefonica Investigación y Desarrollo, S.A.U
  *
  * This file is part of fiware-connectors (FI-WARE project).
  *
@@ -28,13 +28,9 @@ import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.log4j.Logger;
 
 /**
- *
+ * Custom InputSplit for CKAN data.
+ * 
  * @author frb
- * 
- * https://hadoop.apache.org/docs/current/api/org/apache/hadoop/mapred/InputSplit.html
- * https://github.com/apache/hadoop/blob/trunk/hadoop-mapreduce-project/hadoop-mapreduce-client/ \
- *    hadoop-mapreduce-client-core/src/main/java/org/apache/hadoop/mapreduce/InputSplit.java
- * 
  */
 public class CKANInputSplit extends InputSplit implements Writable {
     
@@ -57,6 +53,8 @@ public class CKANInputSplit extends InputSplit implements Writable {
      */
     public CKANInputSplit(String resId, long firstRecordIndex, long length) {
         this.logger = Logger.getLogger(CKANInputSplit.class);
+        logger.info("Creating split (resId=" + resId + ", first record index=" + firstRecordIndex
+                + ", split length=" + length + ")");
         this.resId = resId;
         this.firstRecordIndex = firstRecordIndex;
         this.length = length;

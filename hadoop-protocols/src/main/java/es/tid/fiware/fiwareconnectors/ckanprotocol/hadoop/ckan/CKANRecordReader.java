@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U
+ * Copyright 2015 Telefonica Investigación y Desarrollo, S.A.U
  *
  * This file is part of fiware-connectors (FI-WARE project).
  *
@@ -30,17 +30,18 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 
 /**
- *
+ * Custom RecordReader for CKAN data.
+ * 
  * @author frb
  */
 public class CKANRecordReader extends RecordReader<LongWritable, Text> { // FIXME: Json or CKANRecord instead of Text?
     
-    private Logger logger;
-    private CKANBackend backend;
-    private InputSplit split;
-    private TaskAttemptContext context;
+    private final Logger logger;
+    private final CKANBackend backend;
+    private final InputSplit split;
+    private final TaskAttemptContext context;
     private long start;
-    private long end;
+    private long length;
     private int current; // FIXME: this should be a long integer... but arrays do not accept such a large index
     private JSONArray records;
     private LongWritable key;
@@ -48,6 +49,9 @@ public class CKANRecordReader extends RecordReader<LongWritable, Text> { // FIXM
     
     /**
      * Constructor.
+     * @param backend
+     * @param split
+     * @param context
      */
     public CKANRecordReader(CKANBackend backend, InputSplit split, TaskAttemptContext context) {
         this.logger = Logger.getLogger(CKANRecordReader.class);
@@ -58,19 +62,18 @@ public class CKANRecordReader extends RecordReader<LongWritable, Text> { // FIXM
     
     @Override
     public void initialize(InputSplit split, TaskAttemptContext context) throws IOException, InterruptedException {
-        // get start, end and current positions
         CKANInputSplit ckanInputSplit = (CKANInputSplit) this.split;
         start = ckanInputSplit.getFirstRecordIndex();
-        end = start + ckanInputSplit.getLength();
+        length = ckanInputSplit.getLength();
         current = 0;
         
         // query CKAN for the related resource, seeking to the start of the split
-        records = backend.getRecords(ckanInputSplit.getResId(), start, end);
+        records = backend.getRecords(ckanInputSplit.getResId(), start, start + length);
     } // initialize
     
     @Override
     public boolean nextKeyValue() throws IOException, InterruptedException {
-        if (current < end) {
+        if (current < length) {
             key = new LongWritable(current);
             value = new Text(records.get(current).toString());
             current++;
@@ -92,11 +95,7 @@ public class CKANRecordReader extends RecordReader<LongWritable, Text> { // FIXM
     
     @Override
     public float getProgress() throws IOException, InterruptedException {
-        if (start == end) {
-            return 0.0f;
-        } else {
-            return Math.min(1.0f, current / (float) (end - start));
-        } // if else
+        return Math.min(1.0f, current / (float) (length));
     } // getProgress
     
     @Override
