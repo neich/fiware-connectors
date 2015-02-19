@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U
+ * Copyright 2015 Telefonica Investigación y Desarrollo, S.A.U
  *
  * This file is part of fiware-connectors (FI-WARE project).
  *
@@ -52,7 +52,7 @@ public final class CKANMapReduceTest extends Configured implements Tool {
     public static class TokenizerMapper extends Mapper<Object, Text, Text, IntWritable> {
         
         private static final IntWritable ONE = new IntWritable(1);
-        private Text word = new Text();
+        private final Text word = new Text();
 
         @Override
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
@@ -70,7 +70,7 @@ public final class CKANMapReduceTest extends Configured implements Tool {
      */
     public static class IntSumReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
         
-        private IntWritable result = new IntWritable();
+        private final IntWritable result = new IntWritable();
 
         @Override
         public void reduce(Text key, Iterable<IntWritable> values, Context context)
@@ -98,6 +98,22 @@ public final class CKANMapReduceTest extends Configured implements Tool {
     
     @Override
     public int run(String[] args) throws Exception {
+        // check the number of arguments, show the usage if it is wrong
+        if (args.length != 7) {
+            showUsage();
+            return -1;
+        } // if
+        
+        // get the arguments
+        String ckanHost = args[0];
+        String ckanPort = args[1];
+        boolean sslEnabled = args[2].equals("true");
+        String ckanAPIKey = args[3];
+        String ckanInputs = args[4];
+        String hdfsOutput = args[5];
+        String splitsLength = args[6];
+        
+        // create and configure a MapReduce job
         Configuration conf = this.getConf();
         Job job = Job.getInstance(conf, "CKAN MapReduce test");
         job.setJarByClass(CKANMapReduceTest.class);
@@ -107,12 +123,33 @@ public final class CKANMapReduceTest extends Configured implements Tool {
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
         job.setInputFormatClass(CKANInputFormat.class);
-        CKANInputFormat.addCKANInput(job,
-                "https://data.lab.fiware.org/dataset/logrono_cygnus/resource/ca73a799-9c71-4618-806e-7bd0ca1911f4");
-        CKANInputFormat.setCKANEnvironmnet(job, "data.lab.fiware.org", "443", true,
-                "2d5bf021-ff9f-48e3-bb97-395b77581665");
-        FileOutputFormat.setOutputPath(job, new Path(args[0]));
+//        CKANInputFormat.addCKANInput(job,
+//                "https://data.lab.fiware.org/dataset/logrono_cygnus/resource/ca73a799-9c71-4618-806e-7bd0ca1911f4");
+        CKANInputFormat.addCKANInput(job, ckanInputs);
+//        CKANInputFormat.setCKANEnvironmnet(job, "data.lab.fiware.org", "443", true,
+//                "2d5bf021-ff9f-48e3-bb97-395b77581665");
+        CKANInputFormat.setCKANEnvironmnet(job, ckanHost, ckanPort, sslEnabled, ckanAPIKey);
+        CKANInputFormat.setCKANSplitsLength(job, splitsLength);
+        FileOutputFormat.setOutputPath(job, new Path(hdfsOutput));
+        
+        // run the MapReduce job
         return job.waitForCompletion(true) ? 0 : 1;
     } // main
+    
+    private void showUsage() {
+        System.out.println("Usage:");
+        System.out.println();
+        System.out.println("hadoop jar \\");
+        System.out.println("   target/ckan-protocol-0.1-jar-with-dependencies.jar \\");
+        System.out.println("   es.tid.fiware.fiwareconnectors.ckanprotocol.utils.CKANMapReduceTest \\");
+        System.out.println("   -libjars target/ckan-protocol-0.1-jar-with-dependencies.jar \\");
+        System.out.println("   <ckan host> \\");
+        System.out.println("   <ckan port> \\");
+        System.out.println("   <ssl enabled=true|false> \\");
+        System.out.println("   <ckan API key> \\");
+        System.out.println("   <comma-separated list of ckan inputs> \\");
+        System.out.println("   <hdfs output folder> \\");
+        System.out.println("   <splits length>");
+    } // showUsage
     
 } // CKANMapReduceTest
