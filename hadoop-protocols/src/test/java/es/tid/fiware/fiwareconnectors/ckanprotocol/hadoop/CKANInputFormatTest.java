@@ -25,8 +25,10 @@ import java.io.IOException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.RecordReader;
+import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -68,7 +70,8 @@ public class CKANInputFormatTest {
                 "https://data.lab.fiware.org/dataset/logrono_cygnus/resource/ca73a799-9c71-4618-806e-7bd0ca1911f4");
         CKANInputFormat inputFormat = new CKANInputFormat();
         RecordReader recordReader = inputFormat.createRecordReader(
-                new CKANInputSplit("ca73a799-9c71-4618-806e-7bd0ca1911f4", 0, 1000), null);
+                new CKANInputSplit("ca73a799-9c71-4618-806e-7bd0ca1911f4", 0, 1000),
+                new TaskAttemptContextImpl(job.getConfiguration(), new TaskAttemptID(), null));
         try {
             recordReader.initialize(new CKANInputSplit("ca73a799-9c71-4618-806e-7bd0ca1911f4", 0, 1000), null);
             
@@ -78,7 +81,7 @@ public class CKANInputFormatTest {
                 System.out.println(key + " --> " + value);
             } // while
         } catch (Exception e) {
-            
+            System.out.println(e.getMessage());
         } // try catch
         
     } // testCreateRecordReader
