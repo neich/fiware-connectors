@@ -84,9 +84,9 @@
             </descriptorRefs>
           </configuration>
         </plugin>
-        <plugin>
+        <!--plugin-->
           <!-- http://www.chrissearle.org/2009/09/05/Using_maven-exec-plugin_to_store_the_current_git_sha_in_a_build/ -->
-          <groupId>org.codehaus.mojo</groupId>
+          <!--groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
           <executions>
             <execution>
@@ -104,7 +104,7 @@
             </arguments>
             <outputFile>target/classes/last_git_commit.txt</outputFile>
           </configuration>
-        </plugin>
+        </plugin-->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
